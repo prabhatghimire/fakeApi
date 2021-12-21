@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {View, FlatList, Text, Image} from 'react-native';
+import {View, FlatList, Text, Image, TouchableOpacity} from 'react-native';
 import {styles} from './style';
 
-export const ImageViewScreen = () => {
+export const ImageViewScreen = ({navigation}) => {
   const [post, setPost] = useState({});
 
   const getPhotos = () => {
@@ -28,7 +28,10 @@ export const ImageViewScreen = () => {
   );
 
   return (
-    <View>
+    <View style={{flex:1}}>
+      <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('Home')}>
+        <Text>Posts</Text>
+        </TouchableOpacity>
       <FlatList
         data={post}
         renderItem={renderItem}

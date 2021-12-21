@@ -16,10 +16,10 @@ export const StackNavigation = () => {
       {user.uid ? (
       <>
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="ImageView" component={ImageViewScreen} />
       </>
       ) : (
         <>
-        <Stack.Screen name="ImageView" component={ImageViewScreen} />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
