@@ -7,43 +7,52 @@ import {
   signInWithEmailAndPassword,
 } from '../firebase';
 import {styles} from './style';
+// import { Validate } from '../../components/formValidation';
 
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [inValidEmail, setInValidEmail] = useState(null);
-  const [inValidPassword, setinValidPassword] = useState(null);
 
-  const { setUser} = useContext(UserContext);
+  const [error, setError] = useState(false);
 
-  const vlaidate = () => {
-    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+  const [errorCode, setErrorCode] = useState(null);
+  const [errorMessage, setinErrorMessage] = useState(null);
+
+  // const [isEmailValid, setIsEmailValid] = useState(null);
+  // const [isPasswordValid, setIsPasswordValid] = useState(null);
+
+  const {setUser} = useContext(UserContext);
+
+  const Validate = () => {
+    const emailRegex =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if (email !== null && emailRegex.test(email)) {
-      setInValidEmail(false);
-    } else if (password !== null && password.length > 8) {
-      setInValidEmail(false);
-    } else {
-      setInValidEmail(true);
-      setInValidEmail(true);
+      return true;
+    } else if (password !== null && password >= 8) {
+      return true;
     }
+    setError(true);
+    setErrorCode('Invalid email/password');
+    setinErrorMessage('Please enter valid email and password');
+    return false;
   };
 
   const signIn = () => {
-    // if ( !inValidEmail && !inValidPassword) {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(userCredential => {
-        // const user = userCredential.user;
-        setUser(userCredential.user);
-      })
-      .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
-      });
-    // }
-    // else {
-
-    // }
+    if (Validate()) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(userCredential => {
+          setUser(userCredential.user);
+        })
+        .catch(error => {
+          setError(true);
+          setErrorCode(error.code);
+          setinErrorMessage(error.message);
+        });
+    } else {
+      setError(true);
+      setErrorCode('Invalid email/password');
+      setinErrorMessage('Please enter valid email and password');
+    }
   };
 
   const signUp = () => {
@@ -52,25 +61,35 @@ export const LoginScreen = () => {
         const user = userCredential.user;
       })
       .catch(error => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        setError(true);
+        setErrorCode(error.code);
+        setinErrorMessage(error.message);
       });
   };
   return (
     <View style={styles.mainContainer}>
       <TextInput
+        onFocus={() => setError(false)}
         style={styles.Textinput}
         placeholder="Username"
         value={email}
         onChangeText={setEmail}
       />
       <TextInput
+        onFocus={() => setError(false)}
         style={styles.Textinput}
         placeholder="Password"
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
+      {error ? (
+        <Text style={{color: 'red'}}>
+          {errorCode} : {errorMessage}
+        </Text>
+      ) : (
+        <></>
+      )}
       <TouchableOpacity style={styles.Button} onPress={() => signIn()}>
         <Text>Sign In</Text>
       </TouchableOpacity>

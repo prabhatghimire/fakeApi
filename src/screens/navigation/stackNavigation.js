@@ -4,35 +4,63 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {LoginScreen} from '../LoginScreen/index';
 import {HomeScreen} from '../homeScreen/index';
 import {UserContext} from '../../../App';
-import {ImageViewScreen} from '../imageViewScreen/index'
+import {ImageViewScreen} from '../imageViewScreen/index';
+import {Text, TouchableOpacity, View} from 'react-native';
+import {styles} from './style';
 
 // TO DO
-//header title align to center
-//show login error if invalid credentials
-//onEndReached and onEndReachedThreshold​ (loadmore data) //api
-//show email too in Home Screen
-// logout options show at top of the right side of the header
-//show loder until data is loaded (check flatlist emptyContainer)
+// Redux and redux-saga
 
 const Stack = createNativeStackNavigator();
 
 export const StackNavigation = () => {
-  const {user} = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
+
+  const LogoutButton = () => {
+    return (
+      <View>
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={() => {
+            setUser({});
+          }}>
+          <Text>LogOut</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <Stack.Navigator>
       {user.uid ? (
-      <>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="ImageView" component={ImageViewScreen} />
-      </>
-      ) : (
         <>
         <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{headerShown: false}}
+          name="HomeScreen"
+          component={HomeScreen}
+          options={{
+            headerTitleAlign: 'center',
+            title: 'Posts',
+            headerRight: () => <LogoutButton/>,
+          }}
         />
-      </>
+        <Stack.Screen
+          name="ImageView"
+          component={ImageViewScreen}
+          options={{
+            headerTitleAlign: 'center',
+            title: 'Images',
+            headerRight: () => <LogoutButton/>,
+          }}
+        />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{headerShown: false}}
+          />
+        </>
       )}
     </Stack.Navigator>
   );

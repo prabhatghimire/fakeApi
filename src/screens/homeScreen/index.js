@@ -1,38 +1,56 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {View, FlatList, Text, TouchableOpacity} from 'react-native';
+import {UserContext} from '../../../App';
 import {styles} from './style';
+import {LoadingScreen} from '../../components/LoadingScreen';
 
 export const HomeScreen = ({navigation}) => {
-  const [post, setPost] = useState({});
+  const [post, setPost] = useState([]);
+  const [page, setPage] = useState(0);
 
   const getPost = () => {
-    fetch('https://jsonplaceholder.typicode.com/posts')
+    fetch(`http://fakeapi.jsonparseronline.com/users?_page=${page + 1}`)
       .then(response => response.json())
-      .then(json => setPost(json));
+      .then(json => {
+        setPost(post.concat(json));
+      });
+    setPage(page + 1);
   };
+
+  const {user} = useContext(UserContext);
   useEffect(() => {
     getPost();
-    // console.log(post);
   }, []);
 
   const renderItem = ({item}) => (
     <View style={styles.mainContainer}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text>{item.body}</Text>
+      <Text style={styles.title}>{item.email}</Text>
+      <Text>{item.username}</Text>
     </View>
   );
 
   return (
-    <View  style={{flex:1}}>
-      <TouchableOpacity style={styles.Button} onPress={() => navigation.navigate('ImageView')}>
-        <Text>Images</Text>
+    <View style={{flex: 1}}>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <TouchableOpacity
+          style={styles.Button}
+          onPress={() => navigation.navigate('ImageView')}>
+          <Text>Images</Text>
         </TouchableOpacity>
+        <Text>{user.email}</Text>
+      </View>
       <FlatList
+        ListEmptyComponent={LoadingScreen}
         data={post}
         renderItem={renderItem}
         keyExtractor={item => item.id}
-        onEndReachedThreshold={1}
-        onEndReached = {()=> {console.log('end')}}
+        onEndReachedThreshold={0.1}
+        onEndReached={getPost}
       />
     </View>
   );
