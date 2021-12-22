@@ -11,12 +11,25 @@ import {styles} from './style';
 export const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [inValidEmail, setInValidEmail] = useState(null);
+  const [inValidPassword, setinValidPassword] = useState(null);
 
-  const {user,setUser} = useContext(UserContext)
+  const { setUser} = useContext(UserContext);
 
-
+  const vlaidate = () => {
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+    if (email !== null && emailRegex.test(email)) {
+      setInValidEmail(false);
+    } else if (password !== null && password.length > 8) {
+      setInValidEmail(false);
+    } else {
+      setInValidEmail(true);
+      setInValidEmail(true);
+    }
+  };
 
   const signIn = () => {
+    // if ( !inValidEmail && !inValidPassword) {
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         // const user = userCredential.user;
@@ -27,6 +40,10 @@ export const LoginScreen = () => {
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
       });
+    // }
+    // else {
+
+    // }
   };
 
   const signUp = () => {

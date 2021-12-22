@@ -32,7 +32,7 @@ export const HomeScreen = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         onEndReachedThreshold={1}
-        // onEndReached
+        onEndReached = {()=> {console.log('end')}}
       />
     </View>
   );

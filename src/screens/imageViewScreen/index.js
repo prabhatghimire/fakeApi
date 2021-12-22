@@ -37,7 +37,7 @@ export const ImageViewScreen = ({navigation}) => {
         renderItem={renderItem}
         keyExtractor={item => item.id}
         onEndReachedThreshold={1}
-        // onEndReached
+        onEndReached = {()=> {}}
       />
     </View>
   );
