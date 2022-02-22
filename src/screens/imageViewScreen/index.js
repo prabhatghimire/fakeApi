@@ -14,7 +14,7 @@ export const ImageViewScreen = ({navigation}) => {
   };
   useEffect(() => {
     getPhotos();
-    // console.log(post);
+
   }, []);
 
   const {user} = useContext(UserContext)
